@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OANDER – Shopify Partner Saudi Arabia</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #E8471A;
+    --dark: #1A1A1A;
+    --mid: #2D2D2D;
+    --light-bg: #F5F4F1;
+    --white: #FFFFFF;
+    --grey: #6B6B6B;
+    --border: #E2E0DC;
+    --orange-light: rgba(232,71,26,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ===== NAVBAR ===== */
+  #navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), background 0.3s, box-shadow 0.3s;
+  }
+  #navbar.scrolled {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 1px 0 var(--border), 0 8px 32px rgba(0,0,0,0.06);
+  }
+  #navbar.hidden { transform: translateY(-100%); }
+
+  /* scroll progress bar */
+  #scroll-bar {
+    position: absolute; bottom: 0; left: 0;
+    height: 2px; width: 0%;
+    background: var(--orange);
+    transition: width 0.1s linear;
+  }
+
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 60px;
+    height: 72px;
+  }
+
+  /* Logo */
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 22px;
+    color: var(--dark); letter-spacing: -0.5px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 2px;
+    position: relative; z-index: 10;
+  }
+  .nav-logo .logo-o { color: var(--orange); }
+
+  /* Nav links */
+  .nav-links {
+    display: flex; align-items: center; gap: 4px;
+    list-style: none;
+  }
+  .nav-links > li { position: relative; }
+
+  .nav-links > li > a {
+    display: flex; align-items: center; gap: 5px;
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    color: var(--grey); text-decoration: none;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+  .nav-links > li > a:hover { color: var(--dark); background: var(--light-bg); }
+  .nav-links > li > a .chevron {
+    width: 14px; height: 14px; opacity: 0.5;
+    transition: transform 0.25s;
+  }
+  .nav-links > li:hover > a .chevron { transform: rotate(180deg); }
+
+  /* Active link indicator */
+  .nav-links > li > a.active { color: var(--dark); }
+  .nav-links > li > a.active::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 14px; right: 14px;
+    height: 2px; border-radius: 2px;
+    background: var(--orange);
+  }
+
+  /* Dropdown */
+  .nav-dropdown {
+    position: absolute; top: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px;
+    min-width: 220px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s cubic-bezier(0.16,1,0.3,1);
+    list-style: none;
+  }
+  .nav-links > li:hover .nav-dropdown {
+    opacity: 1; pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown li a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--grey); text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-dropdown li a:hover { background: var(--light-bg); color: var(--dark); }
+  .nav-dropdown li a .dd-icon {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--orange-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .nav-dropdown li a:hover .dd-icon { background: rgba(232,71,26,0.15); }
+
+  /* Nav right */
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  /* Dark mode toggle */
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent; cursor: pointer;
+    font-size: 13px; font-weight: 500;
+    color: var(--grey);
+    transition: background 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .theme-toggle:hover { background: var(--light-bg); color: var(--dark); }
+  .theme-toggle .toggle-icon { font-size: 15px; }
+
+  /* CTA button */
+  .nav-cta {
+    background: var(--orange); color: var(--white);
+    padding: 10px 22px; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(232,71,26,0.25);
+  }
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(232,71,26,0.35);
+  }
+  .nav-cta .arrow {
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .nav-cta:hover .arrow { transform: translateX(3px); }
+
+  /* Hamburger (mobile) */
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer;
+    padding: 8px; border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .nav-hamburger:hover { background: var(--light-bg); }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--dark); border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .nav-mobile {
+    display: none;
+    position: fixed; inset: 0; z-index: 190;
+    background: var(--white);
+    padding: 100px 32px 40px;
+    flex-direction: column; gap: 0;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    overflow-y: auto;
+  }
+  .nav-mobile.open { transform: translateX(0); }
+  .nav-mobile a {
+    display: block; padding: 16px 0;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--dark); text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .nav-mobile a:hover { color: var(--orange); }
+  .nav-mobile .mobile-cta {
+    margin-top: 32px;
+    background: var(--orange); color: var(--white);
+    text-align: center; border-radius: 12px;
+    border-bottom: none; font-size: 18px;
+    padding: 18px;
+  }
+
+  /* Dark mode */
+  body.dark {
+    --dark: #F0EFEC;
+    --light-bg: #141414;
+    --white: #1C1C1C;
+    --grey: #888;
+    --border: #2A2A2A;
+    --orange-light: rgba(232,71,26,0.12);
+    background: #141414;
+    color: #F0EFEC;
+  }
+  body.dark #navbar.scrolled { background: rgba(20,20,20,0.97); }
+  body.dark .nav-mobile { background: #141414; }
+
+  @media (max-width: 900px) {
+    .nav-inner { padding: 0 24px; }
+    .nav-links, .nav-right .theme-toggle, .nav-right .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-mobile { display: flex; }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+    background: var(--light-bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,71,26,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 60px 80px 60px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange-light);
+    border: 1px solid rgba(232,71,26,0.2);
+    color: var(--orange);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 13px; font-weight: 500;
+    margin-bottom: 32px; width: fit-content;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(38px, 4.5vw, 58px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--dark);
+    margin-bottom: 24px;
+  }
+  .hero-title em {
+    font-style: normal;
+    color: var(--orange);
+  }
+  .hero-sub {
+    font-size: 17px; line-height: 1.65;
+    color: var(--grey);
+    max-width: 460px;
+    margin-bottom: 44px;
+  }
+  .hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-secondary {
+    color: var(--dark); font-size: 15px; font-weight: 500;
+    text-decoration: none; display: inline-flex;
+    align-items: center; gap: 8px;
+    border-bottom: 2px solid var(--dark);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--orange); border-color: var(--orange); }
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--dark);
+  }
+  .stat-num span { color: var(--orange); }
+  .stat-label { font-size: 13px; color: var(--grey); margin-top: 2px; }
+
+  .hero-right {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px 60px 60px 20px;
+  }
+  .hero-img-placeholder {
+    width: 100%; max-width: 500px;
+    aspect-ratio: 4/3;
+    background: var(--border);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    color: var(--grey); font-size: 14px;
+    border: 2px dashed #C8C6C2;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Replace .hero-img-placeholder with an <img> tag when ready:
+     <img src="your-image.jpg" alt="..." style="width:100%;max-width:500px;border-radius:16px;"> */
+
+  /* LOGOS */
+  .logos-strip {
+    background: var(--white);
+    padding: 40px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logos-label {
+    font-size: 13px; color: var(--grey);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 24px;
+  }
+  .logos-row {
+    display: flex; gap: 48px; align-items: center; flex-wrap: wrap;
+  }
+  .logo-pill {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #ABABAB;
+    letter-spacing: -0.3px;
+    transition: color 0.2s;
+  }
+  .logo-pill:hover { color: var(--dark); }
+
+  /* PROBLEM SECTION (kotta) */
+  .problem-section {
+    background: var(--dark);
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-section::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(232,71,26,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .section-label {
+    font-size: 12px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--orange);
+    margin-bottom: 20px;
+  }
+  .problem-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--white);
+    max-width: 640px;
+    margin-bottom: 60px;
+  }
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    max-width: 800px;
+    margin-bottom: 60px;
+  }
+  .problem-card {
+    background: #252525;
+    padding: 32px;
+    transition: background 0.2s;
+  }
+  .problem-card:hover { background: #2A2A2A; }
+  .problem-q {
+    font-size: 15px; color: rgba(255,255,255,0.55);
+    line-height: 1.5; margin-bottom: 16px;
+  }
+  .problem-a {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--orange);
+  }
+
+  /* KOTTA BOX */
+  .kotta-box {
+    background: var(--orange);
+    border-radius: 12px;
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    max-width: 900px;
+  }
+  .kotta-tag {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 10px;
+  }
+  .kotta-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800;
+    color: var(--white); letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .kotta-desc {
+    font-size: 15px; color: rgba(255,255,255,0.85);
+    line-height: 1.55; max-width: 440px;
+  }
+  .kotta-cta {
+    background: var(--white); color: var(--orange);
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; white-space: nowrap;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .kotta-cta:hover { transform: scale(1.03); }
+
+  /* SERVICES */
+  .services-section {
+    padding: 100px 60px;
+    background: var(--white);
+  }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 56px; flex-wrap: wrap; gap: 24px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .service-card {
+    background: var(--white);
+    padding: 36px 32px;
+    transition: background 0.2s;
+  }
+  .service-card:hover { background: var(--light-bg); }
+  .service-icon {
+    width: 44px; height: 44px;
+    background: var(--orange-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--dark); margin-bottom: 10px;
+  }
+  .service-desc {
+    font-size: 14px; color: var(--grey);
+    line-height: 1.6;
+  }
+
+  /* WHY OANDER */
+  .why-section {
+    padding: 100px 60px;
+    background: var(--light-bg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .why-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+  .why-sub {
+    font-size: 16px; color: var(--grey);
+    line-height: 1.65; margin-bottom: 40px;
+  }
+  .usps { display: flex; flex-direction: column; gap: 16px; }
+  .usp-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .usp-item:hover {
+    border-color: rgba(232,71,26,0.3);
+    box-shadow: 0 4px 20px rgba(232,71,26,0.06);
+  }
+  .usp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange); flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .usp-title {
+    font-weight: 600; font-size: 15px;
+    color: var(--dark); margin-bottom: 4px;
+  }
+  .usp-desc { font-size: 13px; color: var(--grey); line-height: 1.5; }
+  .why-img-placeholder {
+    width: 100%; aspect-ratio: 1;
+    background: var(--border);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    color: var(--grey); font-size: 14px;
+    border: 2px dashed #C8C6C2;
+  }
+
+  /* INDUSTRIES */
+  .industries-section {
+    padding: 100px 60px;
+    background: var(--white);
+  }
+  .industries-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .industry-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .industry-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--orange);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: bottom;
+  }
+  .industry-card:hover { border-color: rgba(232,71,26,0.2); transform: translateY(-2px); }
+  .industry-card:hover::before { transform: scaleY(1); }
+  .industry-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--orange); margin-bottom: 16px;
+  }
+  .industry-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: var(--dark); margin-bottom: 12px;
+    letter-spacing: -0.3px;
+  }
+  .industry-desc {
+    font-size: 14px; color: var(--grey); line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .industry-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12px; font-weight: 500;
+    padding: 4px 10px; border-radius: 100px;
+    background: var(--orange-light);
+    color: var(--orange);
+    border: 1px solid rgba(232,71,26,0.15);
+  }
+
+  /* PERSONAS */
+  .personas-section {
+    padding: 100px 60px;
+    background: var(--dark);
+  }
+  .personas-section .section-title { color: var(--white); }
+  .personas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .persona-card {
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 36px 28px;
+    transition: border-color 0.2s;
+  }
+  .persona-card:hover { border-color: rgba(232,71,26,0.4); }
+  .persona-role {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--orange); margin-bottom: 12px;
+  }
+  .persona-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--white); margin-bottom: 8px;
+  }
+  .persona-sector {
+    font-size: 13px; color: rgba(255,255,255,0.4);
+    margin-bottom: 24px;
+  }
+  .persona-pain {
+    font-size: 13px; color: rgba(255,255,255,0.6);
+    line-height: 1.6; margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    border-left: 2px solid rgba(232,71,26,0.4);
+    font-style: italic;
+  }
+  .persona-solution {
+    font-size: 13px; color: var(--orange);
+    font-weight: 500; line-height: 1.5;
+  }
+
+  /* REFERENCES */
+  .references-section {
+    padding: 100px 60px;
+    background: var(--light-bg);
+  }
+  .references-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .ref-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+  }
+  .ref-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+  .ref-img-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #aaa; font-size: 12px;
+    margin-bottom: 20px;
+    border: 1px dashed #C8C6C2;
+  }
+  /* Replace ref-img-placeholder with:
+     <img src="project-screenshot.jpg" alt="Project name" style="width:100%;border-radius:8px;margin-bottom:20px;"> */
+  .ref-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--dark); margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .ref-type {
+    font-size: 12px; color: var(--grey);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 20px;
+  }
+  .ref-result {
+    font-size: 13px; color: var(--grey); line-height: 1.55;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* TRUST STRIP */
+  .trust-strip {
+    padding: 60px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .trust-item {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 10px;
+  }
+  .trust-icon { font-size: 28px; }
+  .trust-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--dark);
+  }
+  .trust-desc { font-size: 12px; color: var(--grey); line-height: 1.4; }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 120px 60px;
+    background: var(--dark);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,71,26,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--white);
+    max-width: 680px; margin: 0 auto 20px;
+    position: relative; z-index: 1;
+  }
+  .cta-sub {
+    font-size: 16px; color: rgba(255,255,255,0.55);
+    max-width: 440px; margin: 0 auto 44px;
+    line-height: 1.6; position: relative; z-index: 1;
+  }
+  .cta-buttons {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .btn-white {
+    background: var(--white); color: var(--dark);
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 600;
+    text-decoration: none; transition: transform 0.2s;
+  }
+  .btn-white:hover { transform: translateY(-2px); }
+  .btn-outline-white {
+    background: transparent; color: var(--white);
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; border: 1px solid rgba(255,255,255,0.25);
+    transition: border-color 0.2s;
+  }
+  .btn-outline-white:hover { border-color: rgba(255,255,255,0.6); }
+
+  /* CONTACT FORM */
+  .contact-section {
+    padding: 100px 60px;
+    background: var(--light-bg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 2.5vw, 36px);
+    font-weight: 800; line-height: 1.15;
+    letter-spacing: -0.8px;
+    margin-bottom: 16px;
+  }
+  .contact-desc {
+    font-size: 15px; color: var(--grey); line-height: 1.65;
+    margin-bottom: 40px;
+  }
+  .contact-detail {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: var(--dark);
+    margin-bottom: 16px;
+  }
+  .contact-detail-icon { color: var(--orange); font-size: 18px; }
+  .contact-right {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px;
+    border: 1px solid var(--border);
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block; font-size: 13px; font-weight: 500;
+    color: var(--dark); margin-bottom: 8px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 12px 16px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--dark); background: var(--white);
+    transition: border-color 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232,71,26,0.08);
+  }
+  .form-textarea { resize: vertical; min-height: 100px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-submit {
+    width: 100%; padding: 14px;
+    background: var(--orange); color: var(--white);
+    border: none; border-radius: 8px;
+    font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { opacity: 0.88; }
+  .form-note {
+    font-size: 12px; color: var(--grey); text-align: center;
+    margin-top: 12px; line-height: 1.5;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #111;
+    padding: 48px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--white);
+  }
+  .footer-logo span { color: var(--orange); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-size: 13px; color: rgba(255,255,255,0.4);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-badge { animation: fadeUp 0.5s ease forwards; }
+  .hero-title  { animation: fadeUp 0.5s 0.1s ease both; }
+  .hero-sub    { animation: fadeUp 0.5s 0.2s ease both; }
+  .hero-actions{ animation: fadeUp 0.5s 0.3s ease both; }
+  .hero-stats  { animation: fadeUp 0.5s 0.4s ease both; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 24px; }
+    .logos-strip, .problem-section, .services-section,
+    .industries-section, .personas-section, .references-section,
+    .trust-strip, .cta-section, .contact-section { padding: 60px 24px; }
+    .why-section { grid-template-columns: 1fr; padding: 60px 24px; }
+    .why-right { display: none; }
+    .services-grid { grid-template-columns: 1fr; }
+    .industries-grid { grid-template-columns: 1fr; }
+    .personas-grid { grid-template-columns: 1fr; }
+    .references-grid { grid-template-columns: 1fr; }
+    .trust-grid { grid-template-columns: repeat(2,1fr); }
+    .contact-section { grid-template-columns: 1fr; gap: 40px; }
+    .problems-grid { grid-template-columns: 1fr; }
+    .kotta-box { flex-direction: column; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav id="navbar">
+  <div id="scroll-bar"></div>
+  <div class="nav-inner">
+
+    <!-- Logo -->
+    <a href="#" class="nav-logo">oan<span class="logo-o">der</span></a>
+
+    <!-- Desktop links -->
+    <ul class="nav-links">
+      <li>
+        <a href="#services">
+          Services
+          <svg class="chevron" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <ul class="nav-dropdown">
+          <li><a href="#services"><span class="dd-icon">🛒</span>Shopify Plus Development</a></li>
+          <li><a href="#kotta"><span class="dd-icon">⚙️</span>ERP & System Integration</a></li>
+          <li><a href="#services"><span class="dd-icon">📱</span>Custom App Development</a></li>
+          <li><a href="#services"><span class="dd-icon">🌐</span>Arabic Localization</a></li>
+          <li><a href="#services"><span class="dd-icon">📊</span>Conversion Optimization</a></li>
+        </ul>
+      </li>
+      <li><a href="#kotta">kotta</a></li>
+      <li><a href="#industries">Industries</a></li>
+      <li><a href="#references">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <!-- Right side -->
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-label">Dark</span>
+      </button>
+      <a href="#contact" class="nav-cta">
+        Book a Call <span class="arrow">→</span>
+      </a>
+      <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile" id="mobileMenu">
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#kotta" class="mobile-link">kotta</a>
+  <a href="#industries" class="mobile-link">Industries</a>
+  <a href="#references" class="mobile-link">Work</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+  <a href="#contact" class="mobile-cta">Book a Call →</a>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Shopify Plus Partner · Saudi Arabia</div>
+    <h1 class="hero-title">
+      Your Shopify<br>
+      growth partner<br>
+      in <em>Saudi Arabia.</em>
+    </h1>
+    <p class="hero-sub">
+      We build, connect, and scale Shopify and Shopify Plus stores for ambitious brands entering or expanding in the KSA market — including full ERP and backend system integration.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start a project →</a>
+      <a href="#references" class="btn-secondary">See our work</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">16<span>+</span></div>
+        <div class="stat-label">Years of experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100<span>+</span></div>
+        <div class="stat-label">Projects delivered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5<span>★</span></div>
+        <div class="stat-label">Client satisfaction</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <!-- REPLACE with: <img src="hero-image.jpg" alt="OANDER team" style="width:100%;max-width:500px;border-radius:16px;object-fit:cover;"> -->
+    <div class="hero-img-placeholder">
+      <div style="font-size:36px">🖼️</div>
+      <div>Hero image — replace with &lt;img&gt; tag</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LOGO STRIP ========== -->
+<div class="logos-strip">
+  <div class="logos-label">Trusted by leading brands</div>
+  <div class="logos-row">
+    <!-- REPLACE logo-pill divs with actual <img> logos when available -->
+    <div class="logo-pill">iSTYLE</div>
+    <div class="logo-pill">Wellensteyn</div>
+    <div class="logo-pill">Burger King</div>
+    <div class="logo-pill">Popeyes</div>
+    <div class="logo-pill">Unipatika</div>
+  </div>
+</div>
+
+<!-- ========== KOTTA / PROBLEM SECTION ========== -->
+<section class="problem-section" id="kotta">
+  <div class="section-label">Integration challenges we solve</div>
+  <h2 class="problem-title">
+    Your Shopify store is live.<br>
+    Your backend systems aren't talking to it.
+  </h2>
+  <div class="problems-grid">
+    <div class="problem-card">
+      <div class="problem-q">Shopify isn't syncing with your ERP system?</div>
+      <div class="problem-a">We solve it.</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-q">Inventory data not updating in real time?</div>
+      <div class="problem-a">We solve it.</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-q">Order processing breaking down at scale?</div>
+      <div class="problem-a">We solve it.</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-q">ZATCA e-invoicing compliance blocking your go-live?</div>
+      <div class="problem-a">We solve it.</div>
+    </div>
+  </div>
+
+  <div class="kotta-box">
+    <div class="kotta-left">
+      <div class="kotta-tag">Our integration product</div>
+      <div class="kotta-title">kotta</div>
+      <div class="kotta-desc">
+        kotta is OANDER's proprietary middleware solution that bridges Shopify (or Shopify Plus) with your existing legacy systems — ERP, SAP, WMS, POS — ensuring real-time data flow, automated order fulfillment, and full system integrity.
+      </div>
+    </div>
+    <a href="#contact" class="kotta-cta">Learn about kotta →</a>
+  </div>
+</section>
+
+<!-- ========== SERVICES ========== -->
+<section class="services-section" id="services">
+  <div class="section-header">
+    <div>
+      <div class="section-label" style="color:var(--orange)">What we do</div>
+      <h2 class="section-title">End-to-end Shopify<br>expertise</h2>
+    </div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🛒</div>
+      <div class="service-name">Shopify & Shopify Plus Development</div>
+      <div class="service-desc">Custom store builds, migrations from WooCommerce, Magento, Salla, or Zid — fully optimized for the KSA market with Arabic RTL and local payment gateways.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚙️</div>
+      <div class="service-name">ERP & System Integration</div>
+      <div class="service-desc">Connect Shopify with SAP, Microsoft Dynamics, Odoo, or any legacy ERP. Full ZATCA Fatoora e-invoicing compliance included.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📱</div>
+      <div class="service-name">Custom App Development</div>
+      <div class="service-desc">Bespoke Shopify apps for loyalty programs, subscription models, BNPL integrations (Tamara, Tabby), and advanced checkout logic.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <div class="service-name">Arabic Localization</div>
+      <div class="service-desc">Native RTL design, Arabic UX copy, Mada and STC Pay gateway integration, COD optimization, and culturally adapted checkout flows.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <div class="service-name">Conversion Optimization</div>
+      <div class="service-desc">Data-driven UX improvements, mobile-first design (75% of KSA transactions happen on mobile), A/B testing, and Ramadan peak-load performance tuning.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔄</div>
+      <div class="service-name">Ongoing Support & Growth</div>
+      <div class="service-desc">Dedicated post-launch support, managed services, performance monitoring, and continuous development partnerships.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHY OANDER ========== -->
+<section class="why-section">
+  <div class="why-left">
+    <div class="section-label" style="color:var(--orange)">Why OANDER</div>
+    <h2 class="why-title">The only partner that does all three.</h2>
+    <p class="why-sub">
+      In the Saudi Shopify market, most agencies specialize in design, or have broad platform knowledge, or offer integration work. OANDER uniquely combines all three — with a proprietary product to prove it.
+    </p>
+    <div class="usps">
+      <div class="usp-item">
+        <div class="usp-dot"></div>
+        <div>
+          <div class="usp-title">Shopify-exclusive specialists</div>
+          <div class="usp-desc">We work only on Shopify and Shopify Plus — no platform-agnostic compromises, no divided attention.</div>
+        </div>
+      </div>
+      <div class="usp-item">
+        <div class="usp-dot"></div>
+        <div>
+          <div class="usp-title">Enterprise ERP integration capability</div>
+          <div class="usp-desc">Our kotta middleware handles the complex backend connections your legacy systems need to communicate with Shopify.</div>
+        </div>
+      </div>
+      <div class="usp-item">
+        <div class="usp-dot"></div>
+        <div>
+          <div class="usp-title">Proprietary product — not just services</div>
+          <div class="usp-desc">kotta is a proven, production-grade product — not a one-off custom build — faster delivery and lower risk for you.</div>
+        </div>
+      </div>
+      <div class="usp-item">
+        <div class="usp-dot"></div>
+        <div>
+          <div class="usp-title">European precision, regional ambition</div>
+          <div class="usp-desc">Budapest-based, internationally operating — we bring Central European development standards to the GCC market.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="why-right">
+    <!-- REPLACE with: <img src="team-photo.jpg" alt="OANDER team" style="width:100%;border-radius:16px;object-fit:cover;"> -->
+    <div class="why-img-placeholder">
+      <div style="font-size:36px">🖼️</div>
+      <div>Team / office image</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== INDUSTRIES ========== -->
+<section class="industries-section" id="industries">
+  <div class="section-label" style="color:var(--orange)">Focus sectors</div>
+  <h2 class="section-title">We specialize where KSA<br>e-commerce grows fastest.</h2>
+  <div class="industries-grid">
+    <div class="industry-card">
+      <div class="industry-number">Focus 01</div>
+      <div class="industry-name">B2B Digitalization</div>
+      <div class="industry-desc">Traditional Saudi trading houses and family conglomerates are modernizing under Vision 2030 pressure and ZATCA e-invoicing mandates. We build the Shopify Plus B2B portals and ERP integrations that make this transition smooth.</div>
+      <div class="industry-tags">
+        <span class="tag">Shopify Plus B2B</span>
+        <span class="tag">ERP integration</span>
+        <span class="tag">ZATCA compliance</span>
+      </div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-number">Focus 02</div>
+      <div class="industry-name">D2C Scale-ups</div>
+      <div class="industry-desc">Saudi D2C brands in beauty, supplements, and lifestyle are scaling aggressively across the GCC. We provide the custom app infrastructure, subscription models, and conversion-optimized storefronts they need.</div>
+      <div class="industry-tags">
+        <span class="tag">Beauty & Cosmetics</span>
+        <span class="tag">Health & Supplements</span>
+        <span class="tag">Subscription apps</span>
+      </div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-number">Focus 03</div>
+      <div class="industry-name">Luxury Retail</div>
+      <div class="industry-desc">Saudi luxury e-commerce AOV is 2–3× the European average. We deliver headless Shopify Plus experiences with premium UX, RTL-perfect Arabic localization, and flawless brand consistency.</div>
+      <div class="industry-tags">
+        <span class="tag">Headless Shopify</span>
+        <span class="tag">Premium UX</span>
+        <span class="tag">RTL Arabic</span>
+      </div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-number">Focus 04</div>
+      <div class="industry-name">Fashion & Lifestyle</div>
+      <div class="industry-desc">Apparel dominates 26% of Saudi Shopify stores. We handle complex catalog management, multi-currency setups, size localization, and Mada/STC Pay integration for fashion brands.</div>
+      <div class="industry-tags">
+        <span class="tag">Multi-currency</span>
+        <span class="tag">Mada & STC Pay</span>
+        <span class="tag">Mobile-first</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PERSONAS ========== -->
+<section class="personas-section">
+  <div class="section-label">Who we work with</div>
+  <h2 class="section-title" style="color:var(--white)">Three types of client,<br>one clear partner.</h2>
+  <div class="personas-grid">
+    <div class="persona-card">
+      <div class="persona-role">Persona 01</div>
+      <div class="persona-title">E-commerce Director</div>
+      <div class="persona-sector">Luxury Retail & Beauty (D2C)</div>
+      <div class="persona-pain">"Our site crashes during Ramadan peaks. Mada and Tabby aren't integrated. Arabic UX is broken. We lose sales every day."</div>
+      <div class="persona-solution">→ Headless Shopify Plus · Local payment integrations · Native RTL UX</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-role">Persona 02</div>
+      <div class="persona-title">Digital Transformation Manager</div>
+      <div class="persona-sector">B2B · Trading Houses & Conglomerates</div>
+      <div class="persona-pain">"Our ERP is 15 years old. ZATCA is forcing us to connect everything. We don't know who to trust for a migration this complex."</div>
+      <div class="persona-solution">→ Risk-free Shopify B2B · kotta middleware · ZATCA Fatoora compliance</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-role">Persona 03</div>
+      <div class="persona-title">Founder / CEO</div>
+      <div class="persona-sector">Scale-up D2C Brands</div>
+      <div class="persona-pain">"We've outgrown Salla. CAC is insane. Our investors want GCC expansion but our tech can't support it."</div>
+      <div class="persona-solution">→ Shopify Plus migration · Custom subscription apps · Omnichannel architecture</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== REFERENCES ========== -->
+<section class="references-section" id="references">
+  <div class="section-label" style="color:var(--orange)">Our work</div>
+  <h2 class="section-title">Projects we're proud of.</h2>
+  <div class="references-grid">
+    <div class="ref-card">
+      <!-- REPLACE with: <img src="istyle-screenshot.jpg" alt="iSTYLE project" style="width:100%;border-radius:8px;margin-bottom:20px;aspect-ratio:16/9;object-fit:cover;"> -->
+      <div class="ref-img-placeholder">🖼️ Project screenshot</div>
+      <div class="ref-logo">iSTYLE</div>
+      <div class="ref-type">Custom Shopify App · Apple Premium Reseller</div>
+      <div class="ref-result">Custom Shopify application for the official Apple Premium Reseller — seamless inventory sync and enterprise-grade checkout logic.</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-img-placeholder">🖼️ Project screenshot</div>
+      <div class="ref-logo">Wellensteyn</div>
+      <div class="ref-type">Shopify Plus · Fashion & Outdoor</div>
+      <div class="ref-result">Full Shopify Plus build with ERP integration, multi-market configuration, and conversion-optimized product pages.</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-img-placeholder">🖼️ Project screenshot</div>
+      <div class="ref-logo">Burger King</div>
+      <div class="ref-type">Omnichannel · F&B</div>
+      <div class="ref-result">Omnichannel e-commerce and digital experience development for one of the world's most recognized QSR brands.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TRUST STRIP ========== -->
+<div class="trust-strip">
+  <div class="trust-grid">
+    <div class="trust-item">
+      <div class="trust-icon">🔒</div>
+      <div class="trust-title">ZATCA Compliant</div>
+      <div class="trust-desc">Full Fatoora e-invoicing integration for all KSA builds</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🌍</div>
+      <div class="trust-title">Arabic RTL Native</div>
+      <div class="trust-desc">Right-to-left design and Arabic UX built from the ground up</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">💳</div>
+      <div class="trust-title">Local Payments</div>
+      <div class="trust-desc">Mada · STC Pay · Tamara · Tabby · BNPL ready</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">⚡</div>
+      <div class="trust-title">Shopify Certified</div>
+      <div class="trust-desc">Official Shopify and Shopify Plus development partner</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CTA ========== -->
+<section class="cta-section">
+  <h2 class="cta-title">Ready to build your Shopify presence in Saudi Arabia?</h2>
+  <p class="cta-sub">Book a free 30-minute strategy call with our team. No commitment, no pitch — just clarity on what's possible.</p>
+  <div class="cta-buttons">
+    <a href="#contact" class="btn-white">Book a free call →</a>
+    <a href="#kotta" class="btn-outline-white">Learn about kotta</a>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact-section" id="contact">
+  <div class="contact-left">
+    <div class="section-label" style="color:var(--orange)">Get in touch</div>
+    <h2 class="contact-title">Let's talk about your project.</h2>
+    <p class="contact-desc">Whether you're migrating from Salla, launching a new D2C brand, or connecting a legacy ERP to Shopify — we'd love to hear about your challenge.</p>
+    <div class="contact-detail">
+      <span class="contact-detail-icon">✉</span>
+      hello@oander.hu
+    </div>
+    <div class="contact-detail">
+      <span class="contact-detail-icon">🌐</span>
+      oander.hu
+    </div>
+    <div class="contact-detail">
+      <span class="contact-detail-icon">📍</span>
+      Budapest, Hungary · Available globally
+    </div>
+  </div>
+  <div class="contact-right">
+    <div class="form-group">
+      <label class="form-label">Full name *</label>
+      <input class="form-input" type="text" placeholder="Your name">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Email *</label>
+        <input class="form-input" type="email" placeholder="you@company.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company</label>
+        <input class="form-input" type="text" placeholder="Company name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">I'm interested in</label>
+      <select class="form-select">
+        <option>Shopify Plus store build</option>
+        <option>ERP / kotta integration</option>
+        <option>Custom Shopify app</option>
+        <option>Arabic localization</option>
+        <option>Migration (Salla / Zid / WooCommerce)</option>
+        <option>Other / not sure yet</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tell us about your project</label>
+      <textarea class="form-textarea" placeholder="What's your current platform? What's the main challenge you're facing?"></textarea>
+    </div>
+    <button class="form-submit">Send message →</button>
+    <div class="form-note">We respond within 1 business day. No spam, ever.</div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-logo">oan<span>der</span></div>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#kotta">kotta</a>
+    <a href="#references">Work</a>
+    <a href="#contact">Contact</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 OANDER Technologies. All rights reserved.</div>
+</footer>
+
+<script>
+  const navbar    = document.getElementById('navbar');
+  const scrollBar = document.getElementById('scroll-bar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu= document.getElementById('mobileMenu');
+  const themeBtn  = document.getElementById('themeToggle');
+  const mobileLinks = document.querySelectorAll('.mobile-link, .mobile-cta');
+
+  let lastY = 0;
+  let ticking = false;
+
+  // Scroll: hide/show + progress bar + scrolled class
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const pct  = docH > 0 ? (y / docH) * 100 : 0;
+        scrollBar.style.width = pct + '%';
+
+        if (y > 80) {
+          navbar.classList.add('scrolled');
+          if (y > lastY + 4 && !mobileMenu.classList.contains('open')) {
+            navbar.classList.add('hidden');
+          } else if (y < lastY - 4) {
+            navbar.classList.remove('hidden');
+          }
+        } else {
+          navbar.classList.remove('scrolled', 'hidden');
+        }
+        lastY = y;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Hamburger toggle
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    navbar.classList.remove('hidden');
+  });
+
+  // Close mobile on link click
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Dark mode toggle
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark');
+    themeBtn.querySelector('.toggle-icon').textContent  = isDark ? '☀️' : '🌙';
+    themeBtn.querySelector('.toggle-label').textContent = isDark ? 'Light' : 'Dark';
+  });
+
+  // Active link on scroll (IntersectionObserver)
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navAnchors.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.35 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
