@@ -77,14 +77,15 @@ body {
 /* ─── NAVBAR ─── */
 #navbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), background 0.3s, box-shadow 0.3s;
-}
-#navbar.scrolled {
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(20px);
-  box-shadow: 0 1px 0 var(--border), 0 8px 32px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 0 var(--border);
+  transition: box-shadow 0.3s;
 }
-#navbar.hidden { transform: translateY(-100%); }
+#navbar.scrolled {
+  box-shadow: 0 1px 0 var(--border), 0 8px 32px rgba(0,0,0,0.08);
+}
+body.dark #navbar { background: rgba(20,20,20,0.97); }
 #scroll-bar {
   position: absolute; bottom: 0; left: 0;
   height: 2px; width: 0%;
@@ -343,45 +344,71 @@ body.dark .hero-right { background: #222; }
   background: radial-gradient(circle, rgba(232,71,26,0.14) 0%, transparent 70%);
   pointer-events: none;
 }
+.problem-section-inner {
+  max-width: 1000px; margin: 0 auto; text-align: center;
+}
 .problem-title {
   font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(28px,3.5vw,46px);
-  font-weight: 800; line-height: 1.1; letter-spacing: -1px;
-  color: var(--white); max-width: 600px; margin-bottom: 56px;
+  font-weight: 800; line-height: 1.1; letter-spacing: -0.5px;
+  color: var(--white); margin-bottom: 56px;
 }
 .problems-grid {
   display: grid; grid-template-columns: repeat(2,1fr);
-  gap: 2px; max-width: 860px; margin-bottom: 56px;
+  gap: 16px; margin-bottom: 56px;
+  perspective: 1000px;
 }
+
+/* 3D tilt card */
 .problem-card {
-  background: #222; padding: 32px;
-  transition: background 0.2s;
+  background: #222; padding: 40px 36px;
+  border-radius: 16px; border: 1px solid #333;
+  cursor: default;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.3s;
+  will-change: transform;
 }
-.problem-card:hover { background: #2a2a2a; }
-.problem-q { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 14px; }
-.problem-a { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 700; color: var(--orange); }
+.problem-card:hover {
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,71,26,0.25);
+}
+.problem-q { font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.55; margin-bottom: 16px; }
+.problem-a { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800; color: var(--orange); }
+
+/* Kotta box — also 3D tilt, centered */
+.kotta-box-wrap {
+  perspective: 1000px;
+  display: flex; justify-content: center;
+}
 .kotta-box {
-  background: var(--orange); border-radius: 14px;
-  padding: 40px 48px; max-width: 900px;
+  background: var(--orange); border-radius: 20px;
+  padding: 48px 56px;
+  width: 100%;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 32px; flex-wrap: wrap;
+  gap: 36px; flex-wrap: wrap;
+  transform-style: preserve-3d;
+  cursor: default;
+  transition: box-shadow 0.3s;
+  will-change: transform;
+}
+.kotta-box:hover {
+  box-shadow: 0 40px 100px rgba(232,71,26,0.4), 0 0 0 1px rgba(255,255,255,0.15);
 }
 .kotta-tag {
   font-size: 11px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 2px; color: rgba(255,255,255,0.65); margin-bottom: 8px;
 }
 .kotta-title {
-  font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800;
-  color: var(--white); letter-spacing: -0.5px; margin-bottom: 8px;
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 34px; font-weight: 800;
+  color: var(--white); letter-spacing: -0.5px; margin-bottom: 10px;
 }
-.kotta-desc { font-size: 15px; color: rgba(255,255,255,0.88); line-height: 1.6; max-width: 440px; }
+.kotta-desc { font-size: 16px; color: rgba(255,255,255,0.88); line-height: 1.65; max-width: 460px; }
 .kotta-cta {
   background: var(--white); color: var(--orange);
-  padding: 14px 28px; border-radius: 8px;
-  font-size: 14px; font-weight: 700; text-decoration: none;
+  padding: 16px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; text-decoration: none;
   white-space: nowrap; flex-shrink: 0;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.kotta-cta:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+.kotta-cta:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
 
 /* ─── SERVICES ─── */
 .services-section { padding: 100px 60px; background: var(--white); }
@@ -551,7 +578,7 @@ body.dark .why-card { background: #222; }
   color: var(--white); max-width: 700px; margin: 0 auto 18px;
   position: relative; z-index: 1;
 }
-.cta-sub { font-size: 16px; color: rgba(255,255,255,0.5); max-width: 440px; margin: 0 auto 44px; line-height: 1.65; position: relative; z-index: 1; }
+.cta-sub { font-size: 16px; color: rgba(255,255,255,0.92); max-width: 440px; margin: 0 auto 44px; line-height: 1.65; position: relative; z-index: 1; }
 .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
 .btn-white { background: var(--white); color: var(--dark); padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 600; text-decoration: none; transition: transform 0.2s; }
 .btn-white:hover { transform: translateY(-2px); }
@@ -751,35 +778,39 @@ footer {
 
 <!-- ═══ KOTTA / PROBLEM ═══ -->
 <section class="problem-section" id="kotta">
-  <div class="section-label reveal">Integration challenges we solve</div>
-  <h2 class="problem-title reveal d1">
-    Your Shopify store is live.<br>Your backend systems aren't talking to it.
-  </h2>
-  <div class="problems-grid">
-    <div class="problem-card reveal d1">
-      <div class="problem-q">Shopify isn't syncing with your ERP system?</div>
-      <div class="problem-a">We solve it.</div>
+  <div class="problem-section-inner">
+    <div class="section-label reveal">Integration challenges we solve</div>
+    <h2 class="problem-title reveal d1">
+      Your Shopify store is live.<br>Your backend systems aren't talking to it.
+    </h2>
+    <div class="problems-grid">
+      <div class="problem-card reveal d1">
+        <div class="problem-q">Shopify isn't syncing with your ERP system?</div>
+        <div class="problem-a">We solve it.</div>
+      </div>
+      <div class="problem-card reveal d2">
+        <div class="problem-q">Inventory data not updating in real time?</div>
+        <div class="problem-a">We solve it.</div>
+      </div>
+      <div class="problem-card reveal d3">
+        <div class="problem-q">Order processing breaking down at scale?</div>
+        <div class="problem-a">We solve it.</div>
+      </div>
+      <div class="problem-card reveal d4">
+        <div class="problem-q">ZATCA e-invoicing compliance blocking your go-live?</div>
+        <div class="problem-a">We solve it.</div>
+      </div>
     </div>
-    <div class="problem-card reveal d2">
-      <div class="problem-q">Inventory data not updating in real time?</div>
-      <div class="problem-a">We solve it.</div>
+    <div class="kotta-box-wrap reveal">
+      <div class="kotta-box">
+        <div>
+          <div class="kotta-tag">Our integration product</div>
+          <div class="kotta-title">kotta</div>
+          <div class="kotta-desc">kotta is OANDER's proprietary middleware solution that bridges Shopify (or Shopify Plus) with your existing legacy systems — ERP, SAP, WMS, POS — ensuring real-time data flow, automated order fulfillment, and full system integrity.</div>
+        </div>
+        <a href="#contact" class="kotta-cta">Learn about kotta →</a>
+      </div>
     </div>
-    <div class="problem-card reveal d3">
-      <div class="problem-q">Order processing breaking down at scale?</div>
-      <div class="problem-a">We solve it.</div>
-    </div>
-    <div class="problem-card reveal d4">
-      <div class="problem-q">ZATCA e-invoicing compliance blocking your go-live?</div>
-      <div class="problem-a">We solve it.</div>
-    </div>
-  </div>
-  <div class="kotta-box reveal">
-    <div>
-      <div class="kotta-tag">Our integration product</div>
-      <div class="kotta-title">kotta</div>
-      <div class="kotta-desc">kotta is OANDER's proprietary middleware solution that bridges Shopify (or Shopify Plus) with your existing legacy systems — ERP, SAP, WMS, POS — ensuring real-time data flow, automated order fulfillment, and full system integrity.</div>
-    </div>
-    <a href="#contact" class="kotta-cta">Learn about kotta →</a>
   </div>
 </section>
 
@@ -1049,29 +1080,23 @@ footer {
 </footer>
 
 <script>
-/* ── Navbar scroll behaviour ── */
-const navbar = document.getElementById('navbar');
+/* ── Navbar: always sticky, just shadow on scroll ── */
+const navbar    = document.getElementById('navbar');
 const scrollBar = document.getElementById('scroll-bar');
 const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-const themeBtn = document.getElementById('themeToggle');
+const mobileMenu= document.getElementById('mobileMenu');
+const themeBtn  = document.getElementById('themeToggle');
 const mobileLinks = document.querySelectorAll('.mobile-link, .mobile-cta');
-let lastY = 0, ticking = false;
+let ticking = false;
 
 window.addEventListener('scroll', () => {
   if (!ticking) {
     requestAnimationFrame(() => {
-      const y = window.scrollY;
+      const y    = window.scrollY;
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       scrollBar.style.width = (docH > 0 ? (y / docH) * 100 : 0) + '%';
-      if (y > 80) {
-        navbar.classList.add('scrolled');
-        if (y > lastY + 4 && !mobileMenu.classList.contains('open')) navbar.classList.add('hidden');
-        else if (y < lastY - 4) navbar.classList.remove('hidden');
-      } else {
-        navbar.classList.remove('scrolled','hidden');
-      }
-      lastY = y; ticking = false;
+      navbar.classList.toggle('scrolled', y > 20);
+      ticking = false;
     });
     ticking = true;
   }
@@ -1081,63 +1106,76 @@ hamburger.addEventListener('click', () => {
   const open = mobileMenu.classList.toggle('open');
   hamburger.classList.toggle('open', open);
   document.body.style.overflow = open ? 'hidden' : '';
-  navbar.classList.remove('hidden');
 });
 mobileLinks.forEach(l => l.addEventListener('click', () => {
-  mobileMenu.classList.remove('open'); hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  hamburger.classList.remove('open');
   document.body.style.overflow = '';
 }));
 
 themeBtn.addEventListener('click', () => {
   const d = document.body.classList.toggle('dark');
-  themeBtn.querySelector('.toggle-icon').textContent = d ? '☀️' : '🌙';
+  themeBtn.querySelector('.toggle-icon').textContent  = d ? '☀️' : '🌙';
   themeBtn.querySelector('.toggle-label').textContent = d ? 'Light' : 'Dark';
 });
 
 /* ── Scroll reveal ── */
-const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
 const revealObs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
 }, { threshold: 0.12 });
-revealEls.forEach(el => revealObs.observe(el));
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObs.observe(el));
 
 /* ── Counter animation ── */
 function animateCounter(el) {
-  const target = +el.dataset.target;
-  const duration = 1400;
-  const start = performance.now();
-  function tick(now) {
-    const p = Math.min((now - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(ease * target);
-    if (p < 1) requestAnimationFrame(tick);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(tick);
+  const target = +el.dataset.target, start = performance.now(), dur = 1400;
+  (function tick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * target);
+    if (p < 1) requestAnimationFrame(tick); else el.textContent = target;
+  })(start);
 }
-const counterObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('.counter-num').forEach(animateCounter);
-      e.target.querySelectorAll('.stat-bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
-      counterObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.5 });
-const heroRight = document.querySelector('.hero-right');
-if (heroRight) counterObs.observe(heroRight);
-
-/* ── Active nav link ── */
-const sections = document.querySelectorAll('section[id]');
-const navAs = document.querySelectorAll('.nav-links a[href^="#"]');
 new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('.counter-num').forEach(animateCounter);
+    e.target.querySelectorAll('.stat-bar-fill').forEach(b => b.style.width = b.dataset.w + '%');
   });
-}, { threshold: 0.3 }).observe.bind; 
-sections.forEach(s => new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id)); });
-}, { threshold: 0.3 }).observe(s));
+}, { threshold: 0.5 }).observe(document.querySelector('.hero-right') || document.body);
+
+/* ── Active nav link ── */
+document.querySelectorAll('section[id]').forEach(s =>
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting)
+        document.querySelectorAll('.nav-links a[href^="#"]').forEach(a =>
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id)
+        );
+    });
+  }, { threshold: 0.3 }).observe(s)
+);
+
+/* ── 3D Tilt effect ── */
+function makeTilt(el, strength, lift, shadowColor) {
+  el.addEventListener('mousemove', (e) => {
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left)  / r.width  - 0.5) * 2;
+    const y = ((e.clientY - r.top)   / r.height - 0.5) * 2;
+    el.style.transition = 'box-shadow 0.08s';
+    el.style.transform  = `perspective(900px) rotateX(${-y * strength}deg) rotateY(${x * strength}deg) translateZ(${lift}px) scale(1.02)`;
+    el.style.boxShadow  = `${-x * 22}px ${-y * 22 + 24}px 70px ${shadowColor}`;
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s';
+    el.style.transform  = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)';
+    el.style.boxShadow  = '';
+  });
+}
+
+document.querySelectorAll('.problem-card').forEach(c =>
+  makeTilt(c, 14, 22, 'rgba(0,0,0,0.55)')
+);
+const kottaBox = document.querySelector('.kotta-box');
+if (kottaBox) makeTilt(kottaBox, 7, 18, 'rgba(232,71,26,0.5)');
 </script>
 </body>
 </html>
